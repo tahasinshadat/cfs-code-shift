@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Shift — Episode Two</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============ NAVIGATION ============ -->
+<nav class="nav" id="mainNav">
+  <div class="nav-logo">Code Shift</div>
+  <div class="nav-links">
+    <a href="#home">Home</a>
+    <a href="#listen">Listen</a>
+    <a href="#explore">Explore</a>
+    <a href="#climb">The Climb</a>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="home">
+  <div class="hero-bg">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-ep">Season One &middot; Episode Two</div>
+    <h1 class="hero-title">CODE SHIFT</h1>
+    <p class="hero-subtitle">Three Industries, One Revolution &mdash; How Big Tech, Private Equity, and Academia are navigating the AI transformation</p>
+    <div class="hero-cta-group">
+      <a href="#listen" class="hero-btn hero-btn-primary" id="heroListenBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+        Listen Now
+      </a>
+      <a href="#explore" class="hero-btn hero-btn-secondary">Explore the Story</a>
+      <a href="#climb" class="hero-btn hero-btn-secondary">Play the Climb</a>
+    </div>
+  </div>
+  <div class="hero-scroll-indicator">
+    <div class="hero-scroll-line"></div>
+    SCROLL
+  </div>
+</section>
+
+<!-- ============ MODE SELECTOR ============ -->
+<section class="modes-section" id="modes">
+  <div class="modes-title">Choose Your Experience</div>
+  <h2 class="modes-heading">Three ways to explore this story</h2>
+  <div class="modes-grid">
+    <a href="#listen" class="mode-card" id="modeListenBtn">
+      <span class="mode-icon">&#127911;</span>
+      <div class="mode-label">The Listen</div>
+      <div class="mode-desc">Full podcast with synchronized transcript. Follow along word by word as the story unfolds.</div>
+    </a>
+    <a href="#explore" class="mode-card">
+      <span class="mode-icon">&#127758;</span>
+      <div class="mode-label">The Explore</div>
+      <div class="mode-desc">Scroll through key moments. Audio clips and visuals triggered as you journey through each sector.</div>
+    </a>
+    <a href="#climb" class="mode-card">
+      <span class="mode-icon">&#9968;</span>
+      <div class="mode-label">The Climb</div>
+      <div class="mode-desc">A game inspired by Getting Over It. Climb higher to unlock podcast insights. How far can you go?</div>
+    </a>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ============ THE LISTEN ============ -->
+<section id="listen">
+  <div class="player-sticky" id="playerBar" style="display:none;">
+    <div class="player-inner">
+      <button class="player-play-btn" id="playBtn" onclick="togglePlay()">&#9654;</button>
+      <div class="player-info">
+        <div class="player-now-playing">Now Playing</div>
+        <div class="player-section-label" id="playerSectionLabel">Introduction</div>
+      </div>
+      <div class="player-progress-wrap">
+        <span class="player-time" id="playerTimeElapsed">0:00</span>
+        <div class="player-progress-bar" id="progressBar">
+          <div class="player-progress-fill" id="progressFill"></div>
+        </div>
+        <span class="player-time" id="playerTimeTotal">0:00</span>
+      </div>
+      <button class="player-speed-btn" id="speedBtn" onclick="cycleSpeed()">1x</button>
+    </div>
+  </div>
+
+  <div class="transcript-container" id="transcriptContainer">
+    <button class="transcript-back-btn" onclick="scrollToEl('modes')">&larr; Back to experiences</button>
+    <div id="transcriptContent"></div>
+    <div style="height: 40vh;"></div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ============ THE EXPLORE ============ -->
+<section id="explore">
+  <!-- Panel 1: AWS -->
+  <div class="story-panel" data-panel="aws">
+    <div class="story-panel-bg" style="background: radial-gradient(ellipse at 30% 50%, rgba(0,212,255,0.08), transparent 70%);"></div>
+    <div class="story-content">
+      <div class="story-text">
+        <div class="story-label" style="color: var(--accent-blue);">
+          <span>Big Tech</span>
+        </div>
+        <h2 class="story-heading">Trust First,<br>Speed Second</h2>
+        <div class="story-quote">
+          &ldquo;AWS isn&rsquo;t racing to be first in AI. It&rsquo;s trying to be the most trusted.&rdquo;
+          <div class="story-quote-attr">&mdash; Tahasin Shadat, Episode 1</div>
+        </div>
+        <p class="story-body">At Amazon, AI tools spread through word of mouth, not corporate mandates. The training is about what <em>not</em> to do. Engineers are kept on controlled, slightly inferior internal tools to protect sensitive data. Policy first, access second, innovation third.</p>
+      </div>
+      <div class="story-visual">
+        <div class="story-vis-inner vis-aws"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel 2: Brookfield Speed -->
+  <div class="story-panel" data-panel="brookfield-speed">
+    <div class="story-panel-bg" style="background: radial-gradient(ellipse at 70% 50%, rgba(255,107,53,0.08), transparent 70%);"></div>
+    <div class="story-content reverse">
+      <div class="story-text">
+        <div class="story-label" style="color: var(--accent-coral);">
+          <span>Private Equity</span>
+        </div>
+        <h2 class="story-heading">Speed as<br>Strategy</h2>
+        <div class="story-quote">
+          &ldquo;We can&rsquo;t get to all the things that we need to do fast enough.&rdquo;
+          <div class="story-quote-attr">&mdash; Jack Harnett, Brookfield</div>
+        </div>
+        <p class="story-body">From $600B to over $1T in six years. Brookfield is growing at a pace that demands AI adoption. ChatGPT Enterprise is their most-used application. The struggle isn&rsquo;t adoption&mdash;it&rsquo;s prioritization.</p>
+      </div>
+      <div class="story-visual">
+        <div class="story-vis-inner vis-brookfield"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel 3: iPhone Moment -->
+  <div class="story-panel" data-panel="iphone-moment">
+    <div class="story-panel-bg" style="background: radial-gradient(ellipse at 40% 40%, rgba(123,47,255,0.08), transparent 70%);"></div>
+    <div class="story-content">
+      <div class="story-text">
+        <div class="story-label" style="color: var(--accent-violet);">
+          <span>The Turning Point</span>
+        </div>
+        <h2 class="story-heading">The iPhone<br>Moment</h2>
+        <div class="story-quote">
+          &ldquo;We&rsquo;re in the iPhone moment when people were hanging on to BlackBerry.&rdquo;
+          <div class="story-quote-attr">&mdash; Jack Harnett, Brookfield</div>
+        </div>
+        <p class="story-body">Brookfield didn&rsquo;t discover AI usage through a rollout plan. They discovered it because employees were expensing ChatGPT on corporate credit cards. The revolution isn&rsquo;t coming&mdash;it arrived while no one was looking.</p>
+      </div>
+      <div class="story-visual">
+        <div class="story-vis-inner" style="background: linear-gradient(135deg, #1a0a2e, #0a1a2e); display:flex; align-items:center; justify-content:center;">
+          <div style="width:120px; height:220px; border-radius:24px; border:2px solid rgba(123,47,255,0.4); position:relative; animation: pulse 3s ease-in-out infinite;">
+            <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:60%; height:60%; background: radial-gradient(circle, rgba(123,47,255,0.3), transparent); border-radius:12px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel 4: Scalability for Thinking -->
+  <div class="story-panel" data-panel="scalability">
+    <div class="story-panel-bg" style="background: radial-gradient(ellipse at 60% 60%, rgba(0,255,163,0.06), transparent 70%);"></div>
+    <div class="story-content reverse">
+      <div class="story-text">
+        <div class="story-label" style="color: var(--accent-green);">
+          <span>The Big Idea</span>
+        </div>
+        <h2 class="story-heading">Scalability<br>for Thinking</h2>
+        <div class="story-quote">
+          &ldquo;Code scales deterministic processes. AI scales reasoning. That literally couldn&rsquo;t be scaled before.&rdquo;
+          <div class="story-quote-attr">&mdash; John Steer, Brookfield</div>
+        </div>
+        <p class="story-body">Traditional software runs the same operation a million times. AI scales something fundamentally different: thinking. An analyst&rsquo;s reasoning about a pitch deck can now be replicated across hundreds of deals simultaneously.</p>
+      </div>
+      <div class="story-visual">
+        <div class="story-vis-inner" style="background: linear-gradient(135deg, #0a1a10, #0a2e1a); display:flex; align-items:center; justify-content:center; flex-direction:column; gap:12px;">
+          <div style="display:flex; gap:8px;">
+            <div style="width:12px; height:12px; background:var(--accent-green); border-radius:50%; opacity:0.3; animation: pulse 2s ease infinite;"></div>
+            <div style="width:12px; height:12px; background:var(--accent-green); border-radius:50%; opacity:0.5; animation: pulse 2s ease infinite 0.3s;"></div>
+            <div style="width:12px; height:12px; background:var(--accent-green); border-radius:50%; opacity:0.7; animation: pulse 2s ease infinite 0.6s;"></div>
+          </div>
+          <div style="width:60%; height:2px; background:linear-gradient(90deg, transparent, var(--accent-green), transparent);"></div>
+          <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:6px;">
+            <div style="width:12px;height:12px;background:rgba(0,255,163,0.2);border-radius:50%;animation:pulse 2s ease infinite 0.1s;"></div>
+            <div style="width:12px;height:12px;background:rgba(0,255,163,0.2);border-radius:50%;animation:pulse 2s ease infinite 0.2s;"></div>
+            <div style="width:12px;height:12px;background:rgba(0,255,163,0.2);border-radius:50%;animation:pulse 2s ease infinite 0.3s;"></div>
+            <div style="width:12px;height:12px;background:rgba(0,255,163,0.2);border-radius:50%;animation:pulse 2s ease infinite 0.4s;"></div>
+            <div style="width:12px;height:12px;background:rgba(0,255,163,0.2);border-radius:50%;animation:pulse 2s ease infinite 0.5s;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel 5: Academia -->
+  <div class="story-panel" data-panel="academia">
+    <div class="story-panel-bg" style="background: radial-gradient(ellipse at 50% 50%, rgba(255,107,53,0.06), transparent 70%);"></div>
+    <div class="story-content">
+      <div class="story-text">
+        <div class="story-label" style="color: var(--accent-coral);">
+          <span>Academia</span>
+        </div>
+        <h2 class="story-heading">Freedom<br>Without a Playbook</h2>
+        <div class="story-quote">
+          &ldquo;Education needs to embrace AI, not fight it. But it&rsquo;s probably making us less capable at reasoning independently.&rdquo;
+          <div class="story-quote-attr">&mdash; John Steer, Brookfield</div>
+        </div>
+        <p class="story-body">No corporate policy. No security training. No legal sign-off. In CS 338 at Northwestern, the tools were available and the guardrails were optional. The result? Extraordinary output&mdash;but a looming question about depth of understanding.</p>
+      </div>
+      <div class="story-visual">
+        <div class="story-vis-inner vis-academia"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel 6: Convergence -->
+  <div class="story-panel" data-panel="convergence">
+    <div class="story-panel-bg" style="background: radial-gradient(ellipse at 50% 50%, rgba(123,47,255,0.06), transparent 60%);"></div>
+    <div class="story-content" style="grid-template-columns:1fr; text-align:center; max-width:800px;">
+      <div class="story-text" style="text-align:center;">
+        <div class="story-label" style="color: var(--accent-violet); justify-content:center;">
+          <span>The Thesis</span>
+        </div>
+        <h2 class="story-heading" style="font-size:clamp(32px,5vw,52px);">These worlds<br>are converging</h2>
+        <p class="story-body" style="font-size:19px; max-width:600px; margin:0 auto;">As AI becomes more capable, the institutional walls between Big Tech, finance, and education start to look arbitrary. The concerns are already overlapping. The governance frameworks will follow. The question isn&rsquo;t <em>if</em>&mdash;it&rsquo;s <em>when</em>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ============ THE CLIMB (GAME) ============ -->
+<section id="climb">
+  <div class="game-intro" id="gameIntro">
+    <div class="game-intro-title">THE CLIMB</div>
+    <p class="game-intro-desc">A mini-game inspired by Getting Over It. Use your mouse to aim and click to jump between platforms. The higher you climb, the more podcast insights you unlock. Checkpoints save your progress. How far can you go?</p>
+    <button class="game-start-btn" onclick="startGame()">Begin the Ascent</button>
+  </div>
+  <div class="game-container" id="gameContainer">
+    <canvas class="game-canvas" id="gameCanvas"></canvas>
+    <div class="game-hud">
+      <div class="game-height" id="gameHeight">HEIGHT: 0m</div>
+    </div>
+    <div class="game-quote-overlay" id="gameQuote">
+      <div class="game-quote-text" id="gameQuoteText"></div>
+      <div class="game-quote-source" id="gameQuoteSource"></div>
+    </div>
+    <div class="game-instructions" id="gameInstructions">Arrow keys or A/D to move &middot; Space or click to jump &middot; Reach glowing platforms to unlock insights</div>
+    <button class="game-restart-btn" onclick="restartGame()">Restart</button>
+  </div>
+</section>
+
+<!-- ============ CREDITS ============ -->
+<section class="credits" id="credits">
+  <h2 class="credits-title">Code Shift</h2>
+  <p class="credits-subtitle">Season One &middot; Episode Two &middot; Winter 2026</p>
+  <div class="credits-grid">
+    <div>
+      <div class="credits-item-label">Host &amp; Producer</div>
+      <div class="credits-item-value">Tahasin Shadat</div>
+    </div>
+    <div>
+      <div class="credits-item-label">Interviewees</div>
+      <div class="credits-item-value">Jack Harnett<br>John Steer</div>
+    </div>
+    <div>
+      <div class="credits-item-label">Course</div>
+      <div class="credits-item-value">CFS Winter 2026<br>Northwestern University</div>
+    </div>
+    <div>
+      <div class="credits-item-label">Episode 1 Guests</div>
+      <div class="credits-item-value">Ian &amp; Daniel<br>Amazon Web Services</div>
+    </div>
+  </div>
+  <div class="credits-footer">Keep building &middot; Keep learning &middot; Never stop shifting</div>
+</section>
+
+<script src="script.js"></script>
+</body>
+</html>
