@@ -119,21 +119,21 @@ const TRANSCRIPT = [
 // GAME QUOTES (unlocked at height milestones)
 // =============================================
 const GAME_QUOTES = [
-  { height: 50, text: "Welcome back to CodeShift, the podcast where we explore how technology is transforming the workplace one code commit at a time.", source: "Tahasin Shadat" },
-  { height: 120, text: "AI isn\u2019t just a technical upgrade. It\u2019s reshaping how engineers are judged, how trust gets built, and what it even means to be an expert.", source: "Tahasin \u2014 Episode 1" },
-  { height: 200, text: "AWS isn\u2019t racing to be first in AI. It\u2019s trying to be the most trusted.", source: "Tahasin Shadat \u2014 Episode 1" },
-  { height: 300, text: "I simply am not writing code manually anymore. The most effective workflow is using coding agents.", source: "Jack Harnett \u2014 Brookfield" },
-  { height: 400, text: "We discovered people were using ChatGPT because they were expensing it on the corporate card.", source: "Jack Harnett \u2014 Brookfield" },
-  { height: 500, text: "We\u2019re in the iPhone moment when people were hanging on to BlackBerry.", source: "Jack Harnett \u2014 Brookfield" },
-  { height: 600, text: "It\u2019s like exposure therapy. People need to just use these tools and they\u2019ll learn.", source: "John Steer \u2014 Brookfield" },
-  { height: 700, text: "Code scales deterministic processes. AI scales reasoning. That literally couldn\u2019t be scaled before.", source: "John Steer \u2014 Brookfield" },
-  { height: 800, text: "Jack pulled the plug on a tool people wanted because it couldn\u2019t show its work. AWS governs at entry. Brookfield governs at decision.", source: "Tahasin Shadat" },
-  { height: 900, text: "If you don\u2019t develop your brain, it\u2019s not going to develop. The reliance on AI tools is pervasive.", source: "Jack Harnett \u2014 Brookfield" },
-  { height: 1000, text: "The opportunity cost of not trying is significantly higher than trying and failing.", source: "John Steer \u2014 Brookfield" },
-  { height: 1100, text: "Education needs to embrace AI, not fight it. But it\u2019s probably making us less capable at reasoning independently.", source: "John Steer \u2014 Brookfield" },
-  { height: 1200, text: "The people who will thrive aren\u2019t the ones who use AI the most, or the ones who resist it the hardest.", source: "Tahasin Shadat" },
-  { height: 1350, text: "The revolution is here. It just looks different depending on where you\u2019re standing.", source: "Tahasin Shadat" },
-  { height: 1500, text: "Keep building, keep learning, and never stop shifting. I\u2019ll see you guys in Season 2.", source: "Tahasin Shadat" },
+  { height: 150, text: "Welcome back to CodeShift, the podcast where we explore how technology is transforming the workplace one code commit at a time.", source: "Tahasin Shadat" },
+  { height: 400, text: "AI isn\u2019t just a technical upgrade. It\u2019s reshaping how engineers are judged, how trust gets built, and what it even means to be an expert.", source: "Tahasin \u2014 Episode 1" },
+  { height: 700, text: "AWS isn\u2019t racing to be first in AI. It\u2019s trying to be the most trusted.", source: "Tahasin Shadat \u2014 Episode 1" },
+  { height: 1000, text: "I simply am not writing code manually anymore. The most effective workflow is using coding agents.", source: "Jack Harnett \u2014 Brookfield" },
+  { height: 1400, text: "We discovered people were using ChatGPT because they were expensing it on the corporate card.", source: "Jack Harnett \u2014 Brookfield" },
+  { height: 1800, text: "We\u2019re in the iPhone moment when people were hanging on to BlackBerry.", source: "Jack Harnett \u2014 Brookfield" },
+  { height: 2200, text: "It\u2019s like exposure therapy. People need to just use these tools and they\u2019ll learn.", source: "John Steer \u2014 Brookfield" },
+  { height: 2700, text: "Code scales deterministic processes. AI scales reasoning. That literally couldn\u2019t be scaled before.", source: "John Steer \u2014 Brookfield" },
+  { height: 3200, text: "Jack pulled the plug on a tool people wanted because it couldn\u2019t show its work. AWS governs at entry. Brookfield governs at decision.", source: "Tahasin Shadat" },
+  { height: 3800, text: "If you don\u2019t develop your brain, it\u2019s not going to develop. The reliance on AI tools is pervasive.", source: "Jack Harnett \u2014 Brookfield" },
+  { height: 4500, text: "The opportunity cost of not trying is significantly higher than trying and failing.", source: "John Steer \u2014 Brookfield" },
+  { height: 5200, text: "Education needs to embrace AI, not fight it. But it\u2019s probably making us less capable at reasoning independently.", source: "John Steer \u2014 Brookfield" },
+  { height: 6000, text: "The people who will thrive aren\u2019t the ones who use AI the most, or the ones who resist it the hardest.", source: "Tahasin Shadat" },
+  { height: 7000, text: "The revolution is here. It just looks different depending on where you\u2019re standing.", source: "Tahasin Shadat" },
+  { height: 8000, text: "Keep building, keep learning, and never stop shifting. I\u2019ll see you guys in Season 2.", source: "Tahasin Shadat" },
 ];
 
 // =============================================
@@ -329,11 +329,12 @@ function initScrollStory() {
 }
 
 // =============================================
-// GAME AUDIO — Web Audio API SFX + ambient music
+// GAME AUDIO — Lo-fi beat + SFX via Web Audio API
 // =============================================
 let audioCtx = null;
-let ambientGain = null;
-let ambientOscs = [];
+let beatInterval = null;
+let beatNodes = []; // track all scheduled nodes for cleanup
+let masterGain = null;
 
 function ensureAudioCtx() {
   if (!audioCtx) {
@@ -343,48 +344,49 @@ function ensureAudioCtx() {
   return audioCtx;
 }
 
+// --- SFX ---
 function playJumpSfx() {
   const ctx = ensureAudioCtx();
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
   osc.type = 'sine';
-  osc.frequency.setValueAtTime(320, ctx.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(520, ctx.currentTime + 0.1);
-  gain.gain.setValueAtTime(0.12, ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+  osc.frequency.setValueAtTime(440, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.08);
+  osc.frequency.exponentialRampToValueAtTime(660, ctx.currentTime + 0.12);
+  gain.gain.setValueAtTime(0.09, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.14);
   osc.connect(gain).connect(ctx.destination);
-  osc.start(ctx.currentTime);
-  osc.stop(ctx.currentTime + 0.15);
+  osc.start(); osc.stop(ctx.currentTime + 0.14);
 }
 
 function playLandSfx() {
   const ctx = ensureAudioCtx();
+  // Short thump
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
-  osc.type = 'triangle';
-  osc.frequency.setValueAtTime(180, ctx.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.08);
-  gain.gain.setValueAtTime(0.1, ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(120, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(50, ctx.currentTime + 0.06);
+  gain.gain.setValueAtTime(0.15, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
   osc.connect(gain).connect(ctx.destination);
-  osc.start(ctx.currentTime);
-  osc.stop(ctx.currentTime + 0.12);
+  osc.start(); osc.stop(ctx.currentTime + 0.08);
 }
 
 function playQuoteSfx() {
   const ctx = ensureAudioCtx();
-  const notes = [523, 659, 784]; // C5, E5, G5 arpeggio
-  notes.forEach((freq, i) => {
+  // Warm ascending chime: Cmaj7 arpeggio
+  [523.25, 659.25, 783.99, 987.77].forEach((freq, i) => {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = 'sine';
     osc.frequency.value = freq;
-    gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.1);
-    gain.gain.linearRampToValueAtTime(0.1, ctx.currentTime + i * 0.1 + 0.05);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.1 + 0.4);
+    const t = ctx.currentTime + i * 0.12;
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(0.08, t + 0.04);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
     osc.connect(gain).connect(ctx.destination);
-    osc.start(ctx.currentTime + i * 0.1);
-    osc.stop(ctx.currentTime + i * 0.1 + 0.4);
+    osc.start(t); osc.stop(t + 0.6);
   });
 }
 
@@ -392,56 +394,192 @@ function playFallSfx() {
   const ctx = ensureAudioCtx();
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
-  osc.type = 'sawtooth';
-  osc.frequency.setValueAtTime(400, ctx.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.4);
-  gain.gain.setValueAtTime(0.08, ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+  osc.type = 'triangle';
+  osc.frequency.setValueAtTime(300, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + 0.35);
+  gain.gain.setValueAtTime(0.1, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
   osc.connect(gain).connect(ctx.destination);
-  osc.start(ctx.currentTime);
-  osc.stop(ctx.currentTime + 0.4);
+  osc.start(); osc.stop(ctx.currentTime + 0.35);
 }
+
+// --- Lo-fi beat ---
+function createNoiseBuffer(ctx, duration) {
+  const sr = ctx.sampleRate;
+  const len = sr * duration;
+  const buf = ctx.createBuffer(1, len, sr);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+  return buf;
+}
+
+function playKick(ctx, time, out) {
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(150, time);
+  osc.frequency.exponentialRampToValueAtTime(30, time + 0.12);
+  gain.gain.setValueAtTime(0.35, time);
+  gain.gain.exponentialRampToValueAtTime(0.001, time + 0.2);
+  osc.connect(gain).connect(out);
+  osc.start(time); osc.stop(time + 0.2);
+}
+
+function playHihat(ctx, time, out, noiseBuf) {
+  const src = ctx.createBufferSource();
+  src.buffer = noiseBuf;
+  const hp = ctx.createBiquadFilter();
+  hp.type = 'highpass'; hp.frequency.value = 7000;
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0.06, time);
+  gain.gain.exponentialRampToValueAtTime(0.001, time + 0.04);
+  src.connect(hp).connect(gain).connect(out);
+  src.start(time); src.stop(time + 0.04);
+}
+
+function playSnare(ctx, time, out, noiseBuf) {
+  // Noise burst
+  const src = ctx.createBufferSource();
+  src.buffer = noiseBuf;
+  const bp = ctx.createBiquadFilter();
+  bp.type = 'bandpass'; bp.frequency.value = 3000; bp.Q.value = 0.8;
+  const nGain = ctx.createGain();
+  nGain.gain.setValueAtTime(0.12, time);
+  nGain.gain.exponentialRampToValueAtTime(0.001, time + 0.1);
+  src.connect(bp).connect(nGain).connect(out);
+  src.start(time); src.stop(time + 0.1);
+  // Tonal body
+  const osc = ctx.createOscillator();
+  const oGain = ctx.createGain();
+  osc.type = 'triangle';
+  osc.frequency.setValueAtTime(200, time);
+  osc.frequency.exponentialRampToValueAtTime(100, time + 0.06);
+  oGain.gain.setValueAtTime(0.12, time);
+  oGain.gain.exponentialRampToValueAtTime(0.001, time + 0.08);
+  osc.connect(oGain).connect(out);
+  osc.start(time); osc.stop(time + 0.08);
+}
+
+function playChord(ctx, time, out) {
+  // Lo-fi Rhodes-style pad — Cm7: C4, Eb4, G4, Bb4
+  [261.63, 311.13, 392.00, 466.16].forEach(freq => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    // Slight detune for warmth
+    osc.detune.value = (Math.random() - 0.5) * 12;
+    gain.gain.setValueAtTime(0, time);
+    gain.gain.linearRampToValueAtTime(0.025, time + 0.05);
+    gain.gain.setValueAtTime(0.025, time + 1.6);
+    gain.gain.exponentialRampToValueAtTime(0.001, time + 1.9);
+    osc.connect(gain).connect(out);
+    osc.start(time); osc.stop(time + 2);
+  });
+}
+
+function scheduleBeatBar(ctx, startTime, out, noiseBuf, barIndex) {
+  const BPM = 75;
+  const eighth = 60 / BPM / 2; // duration of one eighth note
+
+  // Alternate between Cm7 and Fm7 chords every 2 bars
+  const chordSet = (barIndex % 4 < 2)
+    ? [261.63, 311.13, 392.00, 466.16]  // Cm7
+    : [174.61, 220.00, 261.63, 329.63]; // Fm7 (lower voicing)
+
+  // Play chord pad
+  chordSet.forEach(freq => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.detune.value = (Math.random() - 0.5) * 10;
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0, startTime);
+    gain.gain.linearRampToValueAtTime(0.02, startTime + 0.05);
+    gain.gain.setValueAtTime(0.02, startTime + eighth * 7);
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + eighth * 8);
+    osc.connect(gain).connect(out);
+    osc.start(startTime); osc.stop(startTime + eighth * 8 + 0.1);
+  });
+
+  for (let step = 0; step < 8; step++) {
+    const t = startTime + step * eighth;
+    // Kick on 1, 4, 6 (boom-bap feel)
+    if (step === 0 || step === 3 || step === 5) playKick(ctx, t, out);
+    // Snare on 2 and 6
+    if (step === 2 || step === 6) playSnare(ctx, t, out, noiseBuf);
+    // Hihats on every eighth note, quieter on offbeats
+    playHihat(ctx, t, out, noiseBuf);
+  }
+
+  // Melodic note — simple pentatonic riff that changes per bar
+  const pentatonic = [261.63, 293.66, 349.23, 392.00, 466.16]; // C Eb F G Bb
+  const noteIdx = barIndex % pentatonic.length;
+  const melTime = startTime + eighth * [0, 3, 5, 2, 4][barIndex % 5];
+  const melOsc = ctx.createOscillator();
+  const melGain = ctx.createGain();
+  melOsc.type = 'triangle';
+  melOsc.frequency.value = pentatonic[noteIdx] * 2; // octave up
+  melOsc.detune.value = (Math.random() - 0.5) * 8;
+  melGain.gain.setValueAtTime(0, melTime);
+  melGain.gain.linearRampToValueAtTime(0.035, melTime + 0.02);
+  melGain.gain.exponentialRampToValueAtTime(0.001, melTime + eighth * 2);
+  melOsc.connect(melGain).connect(out);
+  melOsc.start(melTime); melOsc.stop(melTime + eighth * 2);
+
+  return eighth * 8; // bar duration
+}
+
+let beatBarIndex = 0;
+let nextBarTime = 0;
 
 function startAmbientMusic() {
   const ctx = ensureAudioCtx();
-  if (ambientOscs.length > 0) return; // already playing
+  if (beatInterval) return;
 
-  ambientGain = ctx.createGain();
-  ambientGain.gain.value = 0;
-  ambientGain.gain.linearRampToValueAtTime(0.03, ctx.currentTime + 3);
-  ambientGain.connect(ctx.destination);
+  masterGain = ctx.createGain();
+  masterGain.gain.value = 0;
+  masterGain.gain.linearRampToValueAtTime(0.7, ctx.currentTime + 2);
 
-  // Soft chord drone: C3, G3, E4
-  [130.81, 196.00, 329.63].forEach(freq => {
-    const osc = ctx.createOscillator();
-    osc.type = 'sine';
-    osc.frequency.value = freq;
-    osc.connect(ambientGain);
-    osc.start();
-    ambientOscs.push(osc);
-  });
+  // Lo-fi filter on the master
+  const lpf = ctx.createBiquadFilter();
+  lpf.type = 'lowpass';
+  lpf.frequency.value = 2500;
+  lpf.Q.value = 0.5;
+  masterGain.connect(lpf).connect(ctx.destination);
 
-  // Slow LFO for subtle movement
-  const lfo = ctx.createOscillator();
-  const lfoGain = ctx.createGain();
-  lfo.type = 'sine';
-  lfo.frequency.value = 0.15;
-  lfoGain.gain.value = 0.008;
-  lfo.connect(lfoGain).connect(ambientGain.gain);
-  lfo.start();
-  ambientOscs.push(lfo);
+  const noiseBuf = createNoiseBuffer(ctx, 0.5);
+  beatBarIndex = 0;
+  nextBarTime = ctx.currentTime + 0.1;
+
+  // Schedule bars ahead of time
+  beatInterval = setInterval(() => {
+    if (!audioCtx) { clearInterval(beatInterval); beatInterval = null; return; }
+    // Keep 2 bars scheduled ahead
+    while (nextBarTime < ctx.currentTime + 4) {
+      const barDur = scheduleBeatBar(ctx, nextBarTime, masterGain, noiseBuf, beatBarIndex);
+      nextBarTime += barDur;
+      beatBarIndex++;
+    }
+  }, 200);
+
+  // Kick off first scheduling immediately
+  const barDur = scheduleBeatBar(ctx, nextBarTime, masterGain, noiseBuf, beatBarIndex);
+  nextBarTime += barDur;
+  beatBarIndex++;
 }
 
 function stopAmbientMusic() {
-  if (ambientGain) {
-    const ctx = ensureAudioCtx();
-    ambientGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1);
+  if (masterGain && audioCtx) {
+    masterGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1.5);
   }
-  setTimeout(() => {
-    ambientOscs.forEach(o => { try { o.stop(); } catch(_) {} });
-    ambientOscs = [];
-    ambientGain = null;
-  }, 1200);
+  if (beatInterval) {
+    setTimeout(() => {
+      clearInterval(beatInterval);
+      beatInterval = null;
+      masterGain = null;
+    }, 2000);
+  }
 }
 
 // =============================================
@@ -462,7 +600,7 @@ const MOVE_SPEED = 4.5;
 const MOVE_ACCEL = 0.6;
 const MOVE_FRICTION = 0.78;
 const AIR_FRICTION = 0.92;
-const PLATFORM_COUNT = 120;
+const PLATFORM_COUNT = 250;
 const COYOTE_TIME = 8; // frames of grace period after leaving platform
 
 function startGame() {
@@ -788,7 +926,7 @@ function renderGame() {
   // Height markers
   ctx.font = '11px Courier New';
   ctx.fillStyle = 'rgba(255,255,255,0.05)';
-  for (let h = 0; h < 3000; h += 100) {
+  for (let h = 0; h < 10000; h += 100) {
     const wy = h / 0.6;
     const sy = toScreenY(wy);
     if (sy > -20 && sy < H + 20) {
@@ -981,4 +1119,16 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }, { threshold: 0.1 });
   listenObserver.observe(document.getElementById('transcriptContainer'));
+
+  // Stop game music when scrolling away from the climb section
+  const climbObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting && gameRunning) {
+        stopAmbientMusic();
+      } else if (entry.isIntersecting && gameRunning) {
+        startAmbientMusic();
+      }
+    });
+  }, { threshold: 0.05 });
+  climbObserver.observe(document.getElementById('climb'));
 });
