@@ -175,7 +175,7 @@ window.addEventListener('scroll', () => {
 // =============================================
 // PODCAST PLAYER — REAL AUDIO
 // =============================================
-const audio = new Audio('assets/Code Shift - Episode 2 - AI in Organizations (CFS).mp3');
+const audio = new Audio('assets/episode2.mp3');
 audio.preload = 'metadata';
 
 let isPlaying = false;
